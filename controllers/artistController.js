@@ -1,8 +1,17 @@
 const Artist = require("../models/artist");
 
 // Display list of all artist.
-exports.artist_list = function (req, res) {
-  res.send("NOT IMPLEMENTED: artist list");
+exports.artist_list = function (req, res, next) {
+  Artist.find({}, "name")
+    .sort({ name: 1 })
+    .exec(function (err, artist_list) {
+      if (err) return next(err);
+
+      res.render("artist_list", {
+        title: "Artist List",
+        artist_list: artist_list,
+      });
+    });
 };
 
 // Display detail page for a specific artist.

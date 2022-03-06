@@ -1,12 +1,41 @@
 const Vinyl = require("../models/vinyl");
+const Genre = require("../models/genre");
+const Artist = require("../models/artist");
+
+const async = require("async");
 
 exports.index = function (req, res) {
-  res.send("NOT IMPLEMENTED: Site Home Page");
+  async.parallel(
+    {
+      vinyl_count: function (callback) {
+        Vinyl.countDocuments({}, callback);
+      },
+      vinyl_available_count: function (callback) {
+        Vinyl.countDocuments({ stock: { $gt: 0 } }, callback);
+      },
+      artist_count: function (callback) {
+        Artist.countDocuments({}, callback);
+      },
+      genre_count: function (callback) {
+        Genre.countDocuments({}, callback);
+      },
+    },
+    function (err, results) {
+      res.render("index", { name: "Home Page", error: err, data: results });
+    }
+  );
 };
 
 // Display list of all vinyl.
-exports.vinyl_list = function (req, res) {
-  res.send("NOT IMPLEMENTED: vinyl list");
+exports.vinyl_list = function (req, res, next) {
+  Vinyl.find({}, "name artist genre")
+    .sort({ title: 1 })
+    .populate("artist genre")
+    .exec(function (err, vinyl_list) {
+      if (err) return next(err);
+
+      res.render("vinyl_list", { title: "Vinyl List", vinyl_list: vinyl_list });
+    });
 };
 
 // Display detail page for a specific vinyl.

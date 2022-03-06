@@ -1,0 +1,13 @@
+extends layout 
+
+block content
+  h1= title 
+
+  ul 
+    each vinyl in vinyl_list 
+      li 
+        a(href=vinyl.url) #{vinyl.name}
+        |   by #{vinyl.artist.name}
+        
+    else 
+      li There are no vinyls.

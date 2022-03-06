@@ -2,4 +2,17 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Welcome to #[em Vinyl Inventory]!
+
+  h1 Dynamic content
+
+  if error
+    p Error getting dynamic content.
+  else
+    p The inventory currently consists of:
+
+    ul
+      li #[strong Vinyls:] !{data.vinyl_count}
+      li #[strong Vinyls available:] !{data.vinyl_available_count}
+      li #[strong Artists:] !{data.artist_count}
+      li #[strong Genres:] !{data.genre_count}

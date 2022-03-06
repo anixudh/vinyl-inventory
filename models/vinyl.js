@@ -33,8 +33,8 @@ const VinylSchema = new Schema({
   },
 });
 
-VinylSchema.virtual("url").get(() => {
-  "/catalog/vinyl/" + this._id;
+VinylSchema.virtual("url").get(function () {
+  return "/catalog/vinyl/" + this._id;
 });
 
 module.exports = mongoose.model("Vinyl", VinylSchema);
