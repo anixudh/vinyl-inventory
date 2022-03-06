@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1 #{vinyl.name}
+
+  p #[strong Artist:]
+    a(href=vinyl.artist.url) #{vinyl.artist.name}
+  p #[strong price:] $#{vinyl.price}
+  p #[strong Description:] #{vinyl.description}
+  p #[strong stock:] #{vinyl.stock}
+  p #[strong Genre:]
+    each val, index in vinyl.genre
+      a(href=val.url) #{val.name}
+      if index < vinyl.genre.length - 1
+        |,
+
+  

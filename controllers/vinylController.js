@@ -21,7 +21,7 @@ exports.index = function (req, res) {
       },
     },
     function (err, results) {
-      res.render("index", { name: "Home Page", error: err, data: results });
+      res.render("index", { title: "Home Page", error: err, data: results });
     }
   );
 };
@@ -39,8 +39,24 @@ exports.vinyl_list = function (req, res, next) {
 };
 
 // Display detail page for a specific vinyl.
-exports.vinyl_detail = function (req, res) {
-  res.send("NOT IMPLEMENTED: vinyl detail: " + req.params.id);
+exports.vinyl_detail = function (req, res, next) {
+  Vinyl.findById(req.params.id)
+    .populate("artist")
+    .populate("genre")
+    .exec(function (err, results) {
+      if (err) return next(err);
+
+      if (results == null) {
+        const err = new Error("Vinyl not found");
+        err.status = 404;
+        return next(err);
+      }
+
+      res.render("vinyl_detail", {
+        title: "Vinyl Detail",
+        vinyl: results,
+      });
+    });
 };
 
 // Display vinyl create form on GET.

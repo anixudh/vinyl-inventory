@@ -1,4 +1,6 @@
 const Artist = require("../models/artist");
+const Vinyl = require("../models/vinyl");
+const async = require("async");
 
 // Display list of all artist.
 exports.artist_list = function (req, res, next) {
@@ -15,10 +17,33 @@ exports.artist_list = function (req, res, next) {
 };
 
 // Display detail page for a specific artist.
-exports.artist_detail = function (req, res) {
-  res.send("NOT IMPLEMENTED: artist detail: " + req.params.id);
-};
+exports.artist_detail = function (req, res, next) {
+  async.parallel(
+    {
+      artist: function (callback) {
+        Artist.findById(req.params.id).exec(callback);
+      },
+      artist_vinyls: function (callback) {
+        Vinyl.find({ artist: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
 
+      if (results.artist == null) {
+        const err = new Error("Artist not found");
+        err.status = 404;
+        return next(err);
+      }
+
+      res.render("artist_detail", {
+        title: "Artist Detail",
+        artist: results.artist,
+        artist_vinyls: results.artist_vinyls,
+      });
+    }
+  );
+};
 // Display artist create form on GET.
 exports.artist_create_get = function (req, res) {
   res.send("NOT IMPLEMENTED: artist create GET");

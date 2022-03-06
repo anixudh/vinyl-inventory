@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+  h1 #{artist.name}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Vinyls
+
+    dl
+      each vinyl in artist_vinyls
+        dt
+          a(href=vinyl.url) #{vinyl.name}
+        dd #{vinyl.description}
+
+      else
+        p This artist has no vinyls
